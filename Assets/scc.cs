@@ -13,6 +13,7 @@ public class scc : MonoBehaviour
     Vector3 forceVec;
     Rigidbody rb;
     float speed = 10.0f;
+    int num =0;
     private float movementSpeed = 5f;
 
 
@@ -42,6 +43,32 @@ public class scc : MonoBehaviour
 
     private void Update()
     {
+        pos = transform.position;
+        if (num == 15)
+        {
+            if (pos.x < 0)
+        {
+            transform.position += new Vector3(UnityEngine.Random.Range(0.0f,1.0f), 0, 0);
+        }
+        if (pos.x > 200)
+        {
+            transform.position += new Vector3(UnityEngine.Random.Range(-1.0f,0.0f), 0, 0);
+        }
+
+        if (pos.z < 0)
+        {
+            transform.position += new Vector3(0, 0, UnityEngine.Random.Range(0.0f,0.2f));
+        }
+        if (pos.z > 200)
+        {
+            transform.position += new Vector3(0, 0, UnityEngine.Random.Range(-1.0f,0.0f));
+        }
+        num = 0;
+        }
+        else
+        {
+            num++;
+        }
         ApplyGyroRotation();
         ApplyCalibration();
 
