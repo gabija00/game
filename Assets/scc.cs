@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public class scc : MonoBehaviour
 {private float _initialYAngle = 0f;
@@ -12,10 +13,11 @@ public class scc : MonoBehaviour
     private Vector3 pos;
     Vector3 forceVec;
     Rigidbody rb;
-    float speed = 10.0f;
+    GameObject obj = null;
     int num =0;
     private float movementSpeed = 5f;
-
+    string[] objNames = {"Kryziuotis_baltas1", "Kryziuotis_baltas2", "Kryziuotis_baltas3","Kryziuotis_baltas4","Kryziuotis_baltas5", "Kryziuotis_juodas1","Kryziuotis_juodas2","Kryziuotis_juodas3","Kryziuotis_juodas4","Kryziuotis_juodas5"};
+    
 
     // SETTINGS
     [SerializeField] private float _smoothing = 0.1f;
@@ -43,7 +45,7 @@ public class scc : MonoBehaviour
 
     private void Update()
     {
-        pos = transform.position;
+        Vector3 pos = transform.position;
         if (num == 15)
         {
             if (pos.x < 0)
@@ -74,45 +76,6 @@ public class scc : MonoBehaviour
 
         transform.rotation = Quaternion.Slerp(transform.rotation, _rawGyroRotation.rotation, _smoothing);
         
-       //transform.position = transform.position + new Vector3(0, 0, -Input.acceleration.z);
-        //transform.Translate(new Vector3((lastLatitude-currentLatitude)*30 , 0, (lastLongitude-currentLongitude)*30));
-        //float temp = Input.acceleration.z;
-        //transform.Translate(new Vector3(0,0,-temp) * 0.8f );
-        //transform.position = new Vector3((lastLatitude-currentLatitude)*30 , 0, (lastLongitude-currentLongitude)*30) * speed * Time.deltaTime;
-        /*transform.position = pos + new Vector3((lastLatitude-currentLatitude)*30 , 0, (lastLongitude-currentLongitude)*30);
-        pos = pos + new Vector3((lastLatitude-currentLatitude)*30 , 0, (lastLongitude-currentLongitude)*30);*/
-
-        /*lastLatitude = currentLatitude;
-        lastLongitude = currentLongitude;*/
-
-         /*Vector3 dir = Vector3.zero;
-
-        // we assume that device is held parallel to the ground
-        // and Home button is in the right hand
-
-        // remap device acceleration axis to game coordinates:
-        //  1) XY plane of the device is mapped onto XZ plane
-        //  2) rotated 90 degrees around Y axis
-        dir.x = -Input.acceleration.y;
-        dir.z = Input.acceleration.x;
-        dir.y = Input.acceleration.z;
-
-        // clamp acceleration vector to unit sphere
-        if (dir.sqrMagnitude > 1)
-            dir.Normalize();
-
-        // Make it move 10 meters per second instead of 10 meters per frame...
-        dir *= Time.deltaTime;
-
-        // Move object
-        transform.Translate(dir * speed);*/
-       /* float temp = Input.acceleration.z;
-       transform.Translate(0, 0, -Input.acceleration.z);*/
-       //MoveOnZ(1f);
-         float horizontalInput = Input.acceleration.x;
-        //get the Input from Vertical axis
-        float verticalInput = Input.acceleration.y;
-        float zInput = Input.acceleration.z;
        
         if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft || Input.deviceOrientation == DeviceOrientation.LandscapeRight)
         {
@@ -122,10 +85,28 @@ public class scc : MonoBehaviour
             {
                
                acceleration += accEvent.acceleration * accEvent.deltaTime;
-               Debug.Log(acceleration.z);
-               if (acceleration.z > 0.000)
+               //Debug.Log(acceleration.z);
+               if (acceleration.z > 0.001)
                {
                    transform.position += transform.forward * Time.deltaTime * movementSpeed;
+               }
+               Debug.Log(acceleration.y);
+               if (acceleration.y > 0.000)
+               {
+                   Debug.Log("*");
+                   transform.position += new Vector3(0, 0.5f * Time.deltaTime * movementSpeed, 0);
+                   for (int i = 0; i < objNames.Length; i++)
+                   {
+                       obj = GameObject.Find(objNames[i]);
+                       //Destroy(obj);
+                       Vector3 objPos = obj.transform.position;
+                       if (Math.Abs(pos.x-objPos.x) < 3.5 && Math.Abs(pos.z-objPos.z) < 3.5)
+                       {
+                           Debug.Log("****");
+                           Destroy(obj);
+                           objNames = objNames.Where((source, index) =>index != i).ToArray();
+                       }
+                   }
                }
                /* (acceleration.z < -0.004)
                {
@@ -138,34 +119,8 @@ public class scc : MonoBehaviour
             }
 
         }
-       if (verticalInput < -1f && verticalInput > -0.9f)
-       {
-            transform.position += transform.forward * Time.deltaTime;
-           //Vector3 acceleration = Vector3.zero;
-           // acceleration += Input.acceleration * Time.deltaTime;
-             //transform.position = transform.position + new Vector3(/*horizontalInput * movementSpeed * Time.deltaTime*/0, 0, -acceleration.z + movementSpeed * Time.deltaTime);
-             //transform.Translate(0, 0, -acceleration.z + movementSpeed*Time.deltaTime);
-            /*foreach (AccelerationEvent accEvent in Input.accelerationEvents)
-           {
-             acceleration += accEvent.acceleration * accEvent.deltaTime;
-             transform.position = transform.position + new Vector3(0, 0, -acceleration.z + movementSpeed * Time.deltaTime);
-             transform.Translate(0, 0, -acceleration.z + movementSpeed*Time.deltaTime);
-           }*/
-
-       //get the Input from Horizontal axis
       
-
-        //update the position
-        
-
-        //output to log the position change
-        //Debug.Log(transform.position);
-        Debug.Log("*");
-       }
-        
-
-
-       
+         
        
     }
 
