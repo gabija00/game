@@ -86,7 +86,7 @@ public class scc : MonoBehaviour
                
                acceleration += accEvent.acceleration * accEvent.deltaTime;
                //Debug.Log(acceleration.z);
-               if (acceleration.z > 0.001)
+               if (acceleration.z > -0.0000001)
                {
                    transform.position += transform.forward * Time.deltaTime * movementSpeed;
                }
@@ -94,7 +94,7 @@ public class scc : MonoBehaviour
                if (acceleration.y > 0.000)
                {
                    Debug.Log("*");
-                   transform.position += new Vector3(0, 0.5f * Time.deltaTime * movementSpeed, 0);
+                   transform.position += new Vector3(0, 5f * Time.deltaTime * movementSpeed, 0);
                    for (int i = 0; i < objNames.Length; i++)
                    {
                        obj = GameObject.Find(objNames[i]);
